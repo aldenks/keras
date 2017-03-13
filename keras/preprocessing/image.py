@@ -895,6 +895,10 @@ class DirectoryIterator(Iterator):
         # first, count the number of samples and classes
         self.samples = 0
 
+        # Make class_mode=None work with code below that assumes classes
+        if class_mode == None:
+          classes = ['']
+
         if not classes:
             classes = []
             for subdir in sorted(os.listdir(directory)):
