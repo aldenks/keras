@@ -299,7 +299,7 @@ def img_to_array(img, data_format=None):
     return x
 
 
-def load_img(path, grayscale=False, target_size=None):
+def load_img(path, color_mode=None, target_size=None):
     """Loads an image into PIL format.
 
     # Arguments
@@ -321,9 +321,10 @@ def load_img(path, grayscale=False, target_size=None):
     if grayscale:
         if img.mode != 'L':
             img = img.convert('L')
-    else:
+    elif color_mode == 'rgb':
         if img.mode != 'RGB':
             img = img.convert('RGB')
+
     if target_size:
         wh_tuple = (target_size[1], target_size[0])
         if img.size != wh_tuple:
@@ -865,9 +866,9 @@ class DirectoryIterator(Iterator):
         self.directory = directory
         self.image_data_generator = image_data_generator
         self.target_size = tuple(target_size)
-        if color_mode not in {'rgb', 'grayscale'}:
+        if color_mode not in {'rgb', 'grayscale', None}:
             raise ValueError('Invalid color mode:', color_mode,
-                             '; expected "rgb" or "grayscale".')
+                             '; expected "rgb", "grayscale" or None.')
         self.color_mode = color_mode
         self.data_format = data_format
         if self.color_mode == 'rgb':
@@ -960,7 +961,7 @@ class DirectoryIterator(Iterator):
         for i, j in enumerate(index_array):
             fname = self.filenames[j]
             img = load_img(os.path.join(self.directory, fname),
-                           grayscale=grayscale,
+                           color_mode=self.color_mode,
                            target_size=self.target_size)
             x = img_to_array(img, data_format=self.data_format)
             x = self.image_data_generator.random_transform(x)
