@@ -318,7 +318,7 @@ def load_img(path, color_mode=None, target_size=None):
         raise ImportError('Could not import PIL.Image. '
                           'The use of `array_to_img` requires PIL.')
     img = pil_image.open(path)
-    if grayscale:
+    if color_mode == 'grayscale':
         if img.mode != 'L':
             img = img.convert('L')
     elif color_mode == 'rgb':
